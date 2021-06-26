@@ -357,28 +357,36 @@
                 </div>
                 <div class="col-md-7">
                     <div class="contact-form">
-                        <form>
+                        <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+                            <strong>Terima kasih!</strong> Pesan anda sudah saya terima.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <form name="roadmaps-contact-form">
                             <div class="row">
                                 <div class="col-lg-6 mb-4">
-                                    <input type="text" placeholder="your name" class="form-control form-control-lg fs-6 border-0 shadow-sm">
+                                    <input type="text" placeholder="your name" class="form-control form-control-lg fs-6 border-0 shadow-sm" name="nama">
                                 </div>
                                 <div class="col-lg-6 mb-4">
-                                    <input type="text" placeholder="your email" class="form-control form-control-lg fs-6 border-0 shadow-sm">
+                                    <input type="text" placeholder="your email" class="form-control form-control-lg fs-6 border-0 shadow-sm" name="email">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 mb-4">
-                                    <input type="text" placeholder="subject" class="form-control form-control-lg fs-6 border-0 shadow-sm">
+                                    <input type="text" placeholder="subject" class="form-control form-control-lg fs-6 border-0 shadow-sm" name="subject">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 mb-4">
-                                    <textarea rows="5" placeholder="message" class="form-control form-control-lg fs-6 border-0 shadow-sm"></textarea>
+                                    <textarea rows="5" placeholder="message" class="form-control form-control-lg fs-6 border-0 shadow-sm" name="pesan"></textarea>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <button type="submit" class="btn btn-danger px-3">send message</button>
+                                    <button type="submit" class="btn btn-danger px-3 btn-kirim">send message</button>
+                                    <button class="btn btn-danger btn-loading d-none" type="button" disabled>
+                                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                        Mohon menunggu...
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -400,5 +408,34 @@
     </footer>
     <!-- footer end -->
     <script src="js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzpBVJxOaK11CYF7TdNM2V-QJfP7MaHWm7gQNTOkNp7Unkue_gjSX0vDIu8Bw-1FxibcQ/exec';
+        const form = document.forms['roadmaps-contact-form']
+
+        const btnKirim = document.querySelector('.btn-kirim');
+        const btnLoading = document.querySelector('.btn-loading');
+        const myAlert = document.querySelector('.my-alert');
+      
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          // ketika tombol submit diklik
+          // tampilkan loading, hilangkan kirim
+          btnLoading.classList.toggle('d-none');
+          btnKirim.classList.toggle('d-none');
+          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                // tampilkan kirim, hilangkan loading
+                btnLoading.classList.toggle('d-none');
+                btnKirim.classList.toggle('d-none');
+                // tampilkan alert
+                myAlert.classList.toggle('d-none');
+                // reset form
+                form.reset();
+                console.log('Success!', response);
+            })
+            .catch(error => console.error('Error!', error.message))
+        })
+      </script>
 </body>
 </html>
